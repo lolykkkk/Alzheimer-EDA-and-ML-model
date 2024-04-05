@@ -17,7 +17,7 @@ from sklearn.metrics.pairwise import cosine_distances
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
-from sklearn.preprocessing import StandardScalerstrea
+from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
@@ -404,84 +404,55 @@ Que sólo haya un único valor cercano a 1 (0.57), demuestra que el dataset es d
 
 #------COEFICIENTES-------
 
-st.write("COEFICIENTES PARA ESTUDIAR LA CALIDAD DE LOS DATOS DEL DATASET EN TÉRMINOS DE ANÁLISIS Y PREDICCIÓN")
+st.header("COEFICIENTES PARA ESTUDIAR LA CALIDAD DE LOS DATOS DEL DATASET EN TÉRMINOS DE ANÁLISIS Y PREDICCIÓN")
 
-st.code("""
-#Vamos a probar el coeficiente Kappa
-''')
-x = df_clean[['Gender', 'Age', 'EDUC', 'SES', 'MMSE', 'CDR', 'eTIV']] 
-y = df_clean['Group'] 
+st.code(
+"#Vamos a probar el coeficiente Kappa\n"
+"x = df_clean[['Gender', 'Age', 'EDUC', 'SES', 'MMSE', 'CDR', 'eTIV']]\n" 
+"y = df_clean['Group']\n"
+"# Escalar los datos\n"
+"scaler = StandardScaler()\n"
+"x_scaled = scaler.fit_transform(x)\n"
+"x_train, x_test, y_train, y_test = train_test_split(x_scaled, y, test_size=0.25)\n"
+"# Aumentar el número de iteraciones\n"
+"modelo = LogisticRegression(max_iter=10000)\n"
+"modelo.fit(x_train, y_train)\n"
+"y_pred = modelo.predict(x_test)\n"
+"# Calcular el coeficiente Kappa\n"
+"kappa = cohen_kappa_score(y_test, y_pred)\n"
+"# Mostrar el coeficiente Kappa en la aplicación de Streamlit\n"
+"st.write(f'El coeficiente kappa es: {kappa*100:.2f}%')\n", language='python')
 
-# Escalar los datos
-scaler = StandardScaler()
-x_scaled = scaler.fit_transform(x)
+st.write("COEFICIENTE KAPPA. Conclusión: 0.7835 demuestra un porcentaje muy bueno, por lo que sugiere que los clasificadores están alineados en sus predicciones. Valores positivos y cercanos a 1 señalan mayor concordancia que la esperada por azar.")
 
-x_train, x_test, y_train, y_test = train_test_split(x_scaled, y, test_size=0.25)
+st.code(
+"distancia = cosine_distances([vector1], [vector2])[0, 0]\n"
+"st.write(f'Distancia del coseno: {distancia}')\n", language='python')
 
-# Aumentar el número de iteraciones
-modelo = LogisticRegression(max_iter=10000)
-modelo.fit(x_train, y_train)
+st.write("DISTANCIA COSENO: 1.913671443531939e-10 El resultado obtenido por la distancia del coseno está en notación científica, por lo que el valor es bastante pequeño, lo que indica que la distancia entre los vectores es cercana, por lo que hay una alta similitud, asi que la similitud entre los datos puede ser positiva.")
 
-y_pred = modelo.predict(x_test)
-
-# Calcular el coeficiente Kappa
-kappa = cohen_kappa_score(y_test, y_pred)
-
-# Mostrar el coeficiente Kappa en la aplicación de Streamlit
-st.write(f'El coeficiente kappa es: {kappa:.4f}')
-
-st.write('''
-COEFICIENTE KAPPA. 
-Conclusión: 0.7835 demuestra un porcentaje muy bueno, por lo que sugiere que los clasificadores están alineados en sus predicciones.
-Valores positivos y cercanos a 1 señalan mayor concordancia que la esperada por azar.
-''')
-
-#Distancia coseno
-
-st.code("""
-#Distancia coseno
-vector1 = df_clean.iloc[0, :-1].values
-vector2 = df_clean.iloc[1, :-1].values
-
-distancia = cosine_distances([vector1], [vector2])[0, 0]
-
-print(f'Distancia del coseno: {distancia}')
-""", language='python')
-
-st.write("""
-DISTANCIA COSENO: 
-El resultado obtenido por la distancia del coseno está en notación científica, por lo que el valor es bastante pequeño, lo que indica que la distancia entre los vectores es cercana, por lo que hay una alta similitud, asi que la similitud entre los datos puede ser positiva.
-""")
-
-st.code("""
 #  Calculamos la medida F1
-
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
+import streamlit as st
 
 x = df_clean.iloc[:, :-1]
 y = df_clean.iloc[:, -1]
-
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25)
-
-# Crear un pipeline que primero escala los datos y luego aplica la Regresión Logística. 
+# Crear un pipeline que primero escala los datos y luego aplica la Regresión Logística.
 # También aumenta el número máximo de iteraciones permitidas en el modelo de Regresión Logística a 1000.
 modelo = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))
 modelo.fit(x_train, y_train)
-
 y_pred = modelo.predict(x_test)
-
 # Generar classification report
 report = classification_report(y_test, y_pred)
-
 # Mostrar el classification report en la aplicación de Streamlit
 st.text(report)
-""", language='python')
+st.write("MEDIDA F1: para evaluar el rendimiento del modelo.  Con una precision del 86%, indiga un porcentaje de predicciones correctas bueno. La exhaustivvidad del recall es del 98% para la clase 0 y del 100% para la clase 1. Esto indica que el modelo identifica correctamente la mayoría de los casos positivos.")
 
-st.write("""
-Usamos una medida F-1 para evaluar el rendimiento del modelo.  Con una precision del 86%, indiga un porcentaje de predicciones correctas bueno.
-La exhaustivvidad del recall es del 98% para la clase 0 y del 100% para la clase 1. Esto indica que el modelo identifica correctamente la mayoría de los casos positivos.
-""")
 
 #---IMPLEMENTACION DEL MODELO MACHINE LEARNING-----
 
@@ -489,11 +460,7 @@ st.header("IMPLEMENTACION DE MODELOS MACHINE LEARNING")
 
 st.write("He usado un modelo ´Lazy´ kNN y uno más complejo de Ramdon Forest dónde compruebo la calidad del dataset para predecir.")
 
-st.write("""
-# 3 Intento 1: kNN predeterminado con la distancia de Euclídea.
-
-La distancia euclidiana es una métrica de distancia que se utiliza para datos continuos.
-""")
+st.write("Intento 1: kNN predeterminado con la distancia de Euclídea. La distancia euclidiana es una métrica de distancia que se utiliza para datos continuos.")
 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
@@ -502,20 +469,16 @@ import streamlit as st
 
 x = df_clean.iloc[:, :-1] # Seleccionamos todas las columnas excepto la última
 y = df_clean.iloc[:, -1] # Elegimos sólo la última columna
-
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25)
-
 knn = KNeighborsClassifier(n_neighbors=30) # Ajustamos el parámetro 'k'.
-
 knn.fit(x_train, y_train)
-
 y_pred = knn.predict(x_test)
-
 accuracy = accuracy_score(y_test, y_pred)
-
 # Mostrar la precisión del modelo en la aplicación de Streamlit
 st.write(f'Precisión: {accuracy}')
 
+
+#Grafico de valor k optimo
 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
@@ -525,7 +488,6 @@ import streamlit as st
 
 x = df_clean.iloc[:, :-1]
 y = df_clean.iloc[:, -1]
-
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25)
 
 # Range de 'k' a probar
@@ -533,7 +495,6 @@ k_range = list(range(1, 31))  # Convert range to list
 
 # Lista para mostrar la precision de 'k'
 accuracies = []
-
 for k in k_range:
     knn = KNeighborsClassifier(n_neighbors=k)
     knn.fit(x_train, y_train)
@@ -555,48 +516,55 @@ plt.clf()
 # Mostrar el valor óptimo de k y su precisión correspondiente en la aplicación de Streamlit
 st.write(f'El valor óptimo de k es: {k_optimal} con una precisión del {max(accuracies)*100:.2f}%')
 
+st.code("""
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import train_test_split
 import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
 
 x = df_clean.iloc[:, :6]
 y = df_clean['Group']
-
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 # Escogemos k=10 porque es el óptimo.
 knn = KNeighborsClassifier(n_neighbors=10)
-
-knn.fit(x, y)
-
-y_pred = knn.predict(x)
-
-confm = confusion_matrix(y, y_pred)
-
+knn.fit(x_train, y_train)
+y_pred = knn.predict(x_test)
+confm = confusion_matrix(y_test, y_pred)
 st.write(confm)
-
 cm = confusion_matrix(y_test, y_pred)
-
 # Visualizar matriz de confusión
 sns.heatmap(cm, annot=True, fmt='d')
-
 # Mostrar el gráfico en la aplicación de Streamlit
 st.pyplot(plt.gcf())
-plt.clf()st
+plt.clf()
+""", language='python')
 
-st.markdown('''
-Conclusiones de los resultados
+# Ejecuta el código para generar el gráfico
+x = df_clean.iloc[:, :6]
+y = df_clean['Group']
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+knn = KNeighborsClassifier(n_neighbors=10)
+knn.fit(x_train, y_train)
+y_pred = knn.predict(x_test)
+confm = confusion_matrix(y_test, y_pred)
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True, fmt='d')
+st.pyplot(plt.gcf())
+plt.clf()
 
-En primer lugar descartamos que el dataset sea sensible al ruido  ya que el 'k' seleccionado siempre da valores próximos al 60%.
+st.markdown("Conclusiones de los resultados\n\nEn primer lugar descartamos que el dataset sea sensible al ruido  ya que el 'k' seleccionado siempre da valores próximos al 60%.\n\nLa matriz de confusión es excelente ya que no refleja falsos positivos ni falsos negativos.")
 
-La matriz de confusión es excelente ya que no refleja falsos positivos ni falsos negativos. ''')
 
-#----PARTE FINAL DE LA APP DONDE APLICARMOS EL MODELO----
+st.markdown("VAMOS A PROBAR UN MODELO MAS PRECISO COMO RAMDON FOREST PARA COMPROBAR LA PRECISION DEL DATASET")
 
-st.header("VAMOS A PROBAR UN MODELO MAS PRECISO COMO RAMDON FOREST PARA COMPROBAR LA PRECISION DEL DATASET")
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import train_test_split
+import streamlit as st
 
 #Modelo Random Forest
-
 x = df_clean.iloc[:, :-1]  # Select all columns except the last one as features
 y = df_clean.iloc[:, -1]  # Select the last column as the target variable
 
@@ -616,38 +584,51 @@ y_pred = clf.predict(x_test)
 accuracy = accuracy_score(y_test, y_pred)
 
 # Print the accuracy
-st.write(f'Precisión: {accuracy}')
+st.write(f'Precisión: {accuracy*100:.2f}%')
 
 # Print the classification report
 report = classification_report(y_test, y_pred)
 st.text(report)
 
+st.markdown("El mejor modelo para implementar nuestro modelo predictivo con una alta precisión del 90% es el Random Forest.")
+
 #Hacer la prediccion de la app
+
+# Selecciona las primeras 8 columnas de df_clean
+x = df_clean.iloc[:, :8]
+
+# Asegúrate de que y sigue siendo la misma columna 'Group'
+y = df_clean['Group']
 
 # Crear un Random Forest Classifier
 clf = RandomForestClassifier()
-
 # Asumiendo que ya has entrenado tu modelo con los datos
 clf.fit(x_train, y_train)
-
 # Crear selectboxes para los parámetros del usuario
 param1 = st.selectbox('Selecciona tu género:', options=['Masculino', 'Femenino'])
 param2 = st.selectbox('Selecciona tu edad entre estos rangos:', options=['-60', '60-65', '65+'])
 param3 = st.selectbox('Selecciona tu nivel educativo entre estas opciones:', options=['Hasta secundaria completa finalizada', 'Estudios medios o universidad completa', 'Estudios post-universitarios'])
 param4 = st.selectbox('Selecciona entre estas opciones el que consideras tu nivel socioeconómico en un rango del 0 al 5, siendo 1 muy bajo status y cinco muy elevado:', options=['1', '3', '5'])
-
 # Añadir un parámetro numérico
 param5 = st.number_input('Ingresa un valor entre 0 a 100 dónde consideres tu grado de deterioro cognitivo, siendo 0 : Sin demencia, 0.5 : Demencia muy leve, 1 : Demencia leve, 2 : Demencia moderada y 3 : muy avanzada:', min_value=0, max_value=3)
+
+# Mapear los parámetros a números
+gender_map = {'Masculino': 1, 'Femenino': 0}  # Supongamos que 'Masculino' tiene un mayor riesgo
+age_map = {'-60': 0, '60-65': 2, '65+': 3}  # Supongamos que el riesgo aumenta con la edad
+education_map = {'Hasta secundaria completa finalizada': 0, 'Estudios medios o universidad completa': 1, 'Estudios post-universitarios': 2}  # Supongamos que el riesgo disminuye con la educación
+socioeconomic_map = {'1': 1, '3': 3, '5': 5}  # Supongamos que el riesgo es mayor para los niveles socioeconómicos más bajos
+
+param1 = gender_map[param1]
+param2 = age_map[param2]
+param3 = education_map[param3]
+param4 = socioeconomic_map[param4]
 
 if st.button('¿Podría sufrir demencia?'):
     # Crear un diccionario que mapee los números a las clases
     class_dict = {0: 'Nondemented', 1: 'Demented', 2: 'Converted'}
-
     # Hacer la predicción con los parámetros del usuario
     prediction = clf.predict([[param1, param2, param3, param4, param5]])
-
     # Obtener la clase correspondiente a la predicción
     predicted_class = class_dict[prediction[0]]
-
     # Mostrar la predicción
     st.write(f'La predicción del modelo es: {predicted_class}')
