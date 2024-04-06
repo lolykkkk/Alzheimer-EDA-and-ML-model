@@ -624,7 +624,7 @@ param8 = st.selectbox('Selecciona un valor para el volumen total del cerebro nor
 
 # Mapear los parámetros a números
 gender_map = {'Masculino': 1, 'Femenino': 0}  # Supongamos que 'Masculino' tiene un mayor riesgo
-age_map = {'-60': 0, '60-65': 2, '65+': 3}  # Supongamos que el riesgo aumenta con la edad
+age_map = {'-60': 0, '60-65': 2, '65+': 3, '65-98': 4}
 education_map = {'Hasta secundaria completa finalizada': 0, 'Estudios medios o universidad completa': 1, 'Estudios post-universitarios': 2}  # Supongamos que el riesgo disminuye con la educación
 socioeconomic_map = {'1': 1, '3': 3, '5': 5}  # Supongamos que el riesgo es mayor para los niveles socioeconómicos más bajos
 
@@ -632,8 +632,9 @@ param1 = gender_map[param1]
 param2 = age_map[param2]
 param3 = education_map[param3]
 param4 = socioeconomic_map[param4]
-# Añadir un mapeo para param7
+param6_map = {0: 0, 0.5: 1, 1: 2, 2: 3}
 param7_map = {'1106-1600': 1, '1600-2004': 2}  # Supongamos que el riesgo es mayor para los valores más bajos
+param8_map = {'0.644': 1, '0.729': 2, '0.837': 3}
 
 # Mapear param7 a un número
 param7 = param7_map[param7]
