@@ -118,11 +118,8 @@ columns = st.sidebar.multiselect('Selecciona las columnas que quieres visualizar
 # Mostrar las columnas seleccionadas en la aplicación
 st.dataframe(df[columns])
 
-# Agregar un título con formato
-st.markdown("# Bienvenido a mi aplicación de Streamlit")
-
 # Agregar un subtítulo con formato
-st.markdown("## Análisis y predicción de la enfermedad del Alzheimer")
+st.markdown("## Aplicación sobre el análisis y predicción de la enfermedad del Alzheimer")
 
 #Información sobre la enfermedad a modo introductorio.
 
@@ -162,7 +159,7 @@ Características de los datos:
 - **EDUC**: Nivel de educación del pacienteAlmacena el grado de instrucción. Clasificado entre las categorías: 1: secundaria incompleta, 2: secundaria completa, 3: universidad incompleta, 4: universidad completa ,5: post-bachiller        
 - **SES**: Estatus socioeconómico del paciente. Clasificado entre las categorías de 1 (más alto status) to 5 ( más bajo status)
 - **MMSE**: Almacena el puntaje en el test MMSE, que mide la funcion cognitiva. Rangos de 0 (Peor) a 30 (Mejor), puntajes menores a 24 sugiere función 
-- **CDR**: Contiene el puntaje en el test CDR, que evalúa el grado de deterioro cognitivo. 0 : Sin demencia, 0.5 : Demencia muy leve, 1 : Demencia leve, 2 : Demencia moderada y 3 : muy avanzada.     
+- **CDR**: Contiene el puntaje en el test CDR, que evalúa el grado de deterioro cognitivo. 0 : Sin demencia, 0.5 : Demencia muy leve, 1 : Demencia leve, 2 : Demencia moderada.     
 - **eTIV**: Volumen intracraneal estimado
 - **nWBV**: Volumen cerebral normalizado
 """)
@@ -170,8 +167,16 @@ Características de los datos:
 # Mostrar las columnas seleccionadas en la aplicación
 st.dataframe(df[columns])
 
-
 #-- COMENZAMOS CON LOS PRIMEROS GRAFICOS----
+
+# Calcular estadísticas descriptivas (hacer un describe del dataset)
+desc = df_original.describe()
+
+# Mostrar las estadísticas descriptivas en la aplicación de Streamlit
+st.dataframe(desc)
+
+# Agregar descripción
+st.write("Aquí observamos un resumen de las estadísticas descriptivas claves de todo el dataset. Como primera conclusión, se observa que todas las columnas cuentan con 373 filas, por lo que no tenemos datos faltantes. La media de más del 0,5 en el género tiende hacia el grupo 1 dónde demuestra mayor número de mujeres. La edad de los pacientes varía desde 6 hasta 98 años, cn un promedio de 77. El MMSE evalúa la función cognitiva, que tiene un promedio de aproximadamente 0.85. El CDR mide la gravedad de la demencia dónde hay valores que van variando desde 0 hasta 2. La desviación típica (std), muestra el valor más alto y el más bajo y la diferencia de volatibilidad entre ellos.\n\nEn resumen, este conjunto de datos proporciona información sobre características clínicas y medidas de volumen cerebral en pacientes con Alzheimer. El eTIV y el nWBV son especialmente relevantes para comprender la relación entre la atrofia cerebral y la progresión de la enfermedad.")
 
 st.header("ANÁLISIS EXPLORATORIO (EDA)")
 
@@ -354,9 +359,9 @@ plt.clf()
 
 # Agregar el texto a la aplicación de Streamlit
 st.write("""
-Analizamos el volumen intracraneal total estimado (eTIV) en dos grupos de pacientes con Alzheimer, diferenciados por la etapa de la enfermedad, dónde puede observarse que el grupo 1 con la enfermedad en estado avanzado, concentra una distribución intensa pero más dispersa. A medida que avanza la enfermedad de Alzheimer, se observa una disminución gradual en el eTIV.
+Analizamos el volumen intracraneal total estimado (eTIV) en dos grupos de pacientes con Alzheimer, diferenciados por la etapa de la enfermedad, dónde puede observarse que el grupo 1 con la enfermedad en estado avanzado, muestra una concentración intensa de valores, asi que es dónde se debería poner el foco en pacientes que muestran más riesgo. A medida que avanza la enfermedad de Alzheimer, se observa una disminución gradual en el eTIV.
 Según estudios, esta disminución está relacionada con la atrofia cerebral, que en etapas tempranas, el eTIV puede estar relativamente preservado, pero a medida que progresa la enfermedad, se produce una atrofia significativa que afecta principalmente la corteza cerebral.                                 
-
+El grupo 0 muestra datos muy dispersos y sin seguir una tendecia clara.
 Sin duda, este seguimiento del eTIV a lo largo del tiempo puede ayudar a los médicos a evaluar la progresión de la enfermedad y ajustar el manejo clínico.
 """)
 
@@ -398,8 +403,8 @@ plt.title('Mapa de calor de correlaciones')
 st.pyplot(plt)
 
 st.write("""
-Con los valores de los 416 sujetos en el dataset, las correlaciones en este mapa de calor señalan que de las variables de interés aquellas que presentan una mayor correlación son tres: nWBV-MMSE, CDR-Group y nWBV-Gender, dónde toda la atención cae en CDR-Group (el único grupo con la correlación más fuerte y cercana a 1.) En general, casi todo el dataset muestra valores negativos o cercanos a cero, por lo que el dataset es poco correlativo y muy disperso entre sí. Esto indica que el Alzheimer puede ser influenciado por muchos factores distintos. 
-Que sólo haya un único valor cercano a 1 (0.57), demuestra que el dataset es de calidad y de buena salud estadística para este tipo de estudio. 
+Con los valores de los 416 sujetos en el dataset, las correlaciones en este mapa de calor señalan que de las variables de interés aquellas que presentan una mayor correlación son tres: nWBV-MMSE, CDR-Group y nWBV-Gender, dónde toda la atención cae en CDR-Group (el único grupo con la correlación más fuerte y cercana a 1.) En general, el dataset es poco correlativo y muy disperso entre sí. Esto indica que el Alzheimer puede ser influenciado por muchos factores distintos. 
+Que sólo haya un único valor cercano a 1 (0.57) y una proporción decente de valores cercanos a cero demuestra que el dataset es de calidad y de buena salud estadística para este tipo de estudio. 
 """)
 
 #------COEFICIENTES-------
@@ -423,13 +428,13 @@ st.code(
 "# Mostrar el coeficiente Kappa en la aplicación de Streamlit\n"
 "st.write(f'El coeficiente kappa es: {kappa*100:.2f}%')\n", language='python')
 
-st.write("COEFICIENTE KAPPA. Conclusión: 0.7835 demuestra un porcentaje muy bueno, por lo que sugiere que los clasificadores están alineados en sus predicciones. Valores positivos y cercanos a 1 señalan mayor concordancia que la esperada por azar.")
+st.write("COEFICIENTE KAPPA. Conclusión: 0.7835 demuestra un porcentaje aceptable, por lo que sugiere que los clasificadores están alineados en sus predicciones. Valores cercanos a 1 señalan mayor concordancia que la esperada por azar, pero estos resultados también pueden llegar a ser muy aleatorios.")
 
 st.code(
 "distancia = cosine_distances([vector1], [vector2])[0, 0]\n"
 "st.write(f'Distancia del coseno: {distancia}')\n", language='python')
 
-st.write("DISTANCIA COSENO: 1.913671443531939e-10 El resultado obtenido por la distancia del coseno está en notación científica, por lo que el valor es bastante pequeño, lo que indica que la distancia entre los vectores es cercana, por lo que hay una alta similitud, asi que la similitud entre los datos puede ser positiva.")
+st.write("DISTANCIA COSENO: 1.913671443531939e-10 El resultado obtenido por la distancia del coseno está en notación científica, por lo que el valor es bastante pequeño, siendo la distancia entre los vectores cercana y eso indica que los registros se parecen bastante entre sí")
 
 #  Calculamos la medida F1
 from sklearn.preprocessing import StandardScaler
@@ -451,14 +456,14 @@ y_pred = modelo.predict(x_test)
 report = classification_report(y_test, y_pred)
 # Mostrar el classification report en la aplicación de Streamlit
 st.text(report)
-st.write("MEDIDA F1: para evaluar el rendimiento del modelo.  Con una precision del 86%, indiga un porcentaje de predicciones correctas bueno. La exhaustivvidad del recall es del 98% para la clase 0 y del 100% para la clase 1. Esto indica que el modelo identifica correctamente la mayoría de los casos positivos.")
+st.write("MEDIDA F1: para evaluar el rendimiento del modelo.  Con una precisión que ronda del 85% al 98%, indiga un porcentaje de predicciones correcto. La exhaustividad del recall es de hasta poder alcanzar del 98% para la clase 0 y 100% para la clase 1. Esto indica que el modelo identifica correctamente la mayoría de los casos positivos.")
 
 
 #---IMPLEMENTACION DEL MODELO MACHINE LEARNING-----
 
 st.header("IMPLEMENTACION DE MODELOS MACHINE LEARNING")
 
-st.write("He usado un modelo ´Lazy´ kNN y uno más complejo de Ramdon Forest dónde compruebo la calidad del dataset para predecir.")
+st.write("He usado un modelo ´Lazy´ kNN y uno complicado de Ramdon Forest dónde compruebo la calidad del dataset para predecir.")
 
 st.write("Intento 1: kNN predeterminado con la distancia de Euclídea. La distancia euclidiana es una métrica de distancia que se utiliza para datos continuos.")
 
@@ -554,10 +559,10 @@ sns.heatmap(cm, annot=True, fmt='d')
 st.pyplot(plt.gcf())
 plt.clf()
 
-st.markdown("Conclusiones de los resultados\n\nEn primer lugar descartamos que el dataset sea sensible al ruido  ya que el 'k' seleccionado siempre da valores próximos al 60%.\n\nLa matriz de confusión es excelente ya que no refleja falsos positivos ni falsos negativos.")
+st.markdown("Conclusiones de los resultados\n\nEn primer lugar descartamos que el dataset sea sensible al ruido  ya que el 'k' óptimo seleccionado entre 1-10 siempre da valores próximos al 60%.\n\nLa matriz de confusión es excelente ya que no refleja falsos positivos ni falsos negativos.")
 
 
-st.markdown("VAMOS A PROBAR UN MODELO MAS PRECISO COMO RAMDON FOREST PARA COMPROBAR LA PRECISION DEL DATASET")
+st.markdown("VAMOS A PROBAR UN MODELO DE LENGUAJE SUPERVISADO MÁS PRECISO COMO RAMDON FOREST PARA COMPROBAR LA PRECISIÓN DEL DATASET")
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
@@ -590,7 +595,7 @@ st.write(f'Precisión: {accuracy*100:.2f}%')
 report = classification_report(y_test, y_pred)
 st.text(report)
 
-st.markdown("El mejor modelo para implementar nuestro modelo predictivo con una alta precisión del 90% es el Random Forest.")
+st.markdown("El mejor algoritmo para implementar nuestro algoritmo predictivo con una precisión cerca o superior al 90% es el Random Forest.")
 
 #Hacer la prediccion de la app
 
@@ -604,13 +609,18 @@ y = df_clean['Group']
 clf = RandomForestClassifier()
 # Asumiendo que ya has entrenado tu modelo con los datos
 clf.fit(x_train, y_train)
+
 # Crear selectboxes para los parámetros del usuario
 param1 = st.selectbox('Selecciona tu género:', options=['Masculino', 'Femenino'])
-param2 = st.selectbox('Selecciona tu edad entre estos rangos:', options=['-60', '60-65', '65+'])
+param2 = st.selectbox('Selecciona tu edad entre estos rangos:', options=['-60', '60-65', '65-98'])
 param3 = st.selectbox('Selecciona tu nivel educativo entre estas opciones:', options=['Hasta secundaria completa finalizada', 'Estudios medios o universidad completa', 'Estudios post-universitarios'])
 param4 = st.selectbox('Selecciona entre estas opciones el que consideras tu nivel socioeconómico en un rango del 0 al 5, siendo 1 muy bajo status y cinco muy elevado:', options=['1', '3', '5'])
-# Añadir un parámetro numérico
-param5 = st.number_input('Ingresa un valor entre 0 a 100 dónde consideres tu grado de deterioro cognitivo, siendo 0 : Sin demencia, 0.5 : Demencia muy leve, 1 : Demencia leve, 2 : Demencia moderada y 3 : muy avanzada:', min_value=0, max_value=3)
+param5 = st.number_input('Ingresa un valor entre 4 a 30 dónde consideres evalues tu función cognitiva, considerando rangos de 4 peores, un valor menor a 24 sugiere función anormal y los que están cerca del 30 dentro de los valores apropiados', min_value=4, max_value=30)
+
+# Añadir 3 parámetros numéricos adicionales
+param6 = st.number_input('Ingresa un valor de 0 a 2 según consideres tu grado cognictivo con la enfermedad:, siendo 0 : Sin demencia, 0.5 : Demencia muy leve, 1 : Demencia leve, 2 : Demencia avanzada:', min_value=0, max_value=2) 
+param7 = st.selectbox('Selecciona el valor desde 1,106 a 2,004, para considerar tu volumen intracraneal total estimado en mm3 (dónde valores por debajo de 1,600 son un mal indicativo):', options=['1106-1600', '1600-2004'])
+param8 = st.selectbox('Selecciona un valor para el volumen total del cerebro normalizado dónde a mayour cantidad y hasta 0.729 tóxeles en un volumen de cerebro sano:', options=['0.644', '0.729', '0.837'])
 
 # Mapear los parámetros a números
 gender_map = {'Masculino': 1, 'Femenino': 0}  # Supongamos que 'Masculino' tiene un mayor riesgo
@@ -622,13 +632,27 @@ param1 = gender_map[param1]
 param2 = age_map[param2]
 param3 = education_map[param3]
 param4 = socioeconomic_map[param4]
+# Añadir un mapeo para param7
+param7_map = {'1106-1600': 1, '1600-2004': 2}  # Supongamos que el riesgo es mayor para los valores más bajos
+
+# Mapear param7 a un número
+param7 = param7_map[param7]
 
 if st.button('¿Podría sufrir demencia?'):
     # Crear un diccionario que mapee los números a las clases
     class_dict = {0: 'Nondemented', 1: 'Demented', 2: 'Converted'}
     # Hacer la predicción con los parámetros del usuario
-    prediction = clf.predict([[param1, param2, param3, param4, param5]])
-    # Obtener la clase correspondiente a la predicción
-    predicted_class = class_dict[prediction[0]]
-    # Mostrar la predicción
-    st.write(f'La predicción del modelo es: {predicted_class}')
+    prediction = clf.predict([[param1, param2, param3, param4, param5, param6, param7, param8]])
+    # Verificar si el modelo hizo una predicción
+    if len(prediction) > 0:
+        # Verificar si la predicción está en class_dict
+        if prediction[0] in class_dict:
+            # Obtener la clase correspondiente a la predicción
+            predicted_class = class_dict[prediction[0]]
+            # Mostrar la predicción
+            st.write(f'La predicción del modelo es: {predicted_class}')
+        else:
+            st.write(f'La predicción del modelo es un número desconocido: {prediction[0]}')
+    else:
+        st.write('El modelo no hizo ninguna predicción.')
+
